@@ -1,0 +1,65 @@
+# .NET e arquivos gerais
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.cache
+*.log
+*.vs/
+*.user
+*.lock.json
+*.csproj.user
+appsettings*.json
+Properties/launchSettings.json
+
+# Diretórios de publicação
+publish/
+out/
+dist/
+
+# Configurações de ambiente local
+.vscode/
+.idea/
+.DS_Store
+
+# Configurações específicas do Visual Studio
+.vscode/
+.vs/
+.vscode/*
+
+# Configurações específicas do Visual Studio Code
+.vscode/
+
+# Frontend React
+node_modules/
+build/
+public/
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Arquivos temporários
+*.tmp
+*.swp
+*.swo
+
+# Arquivos de pacotes e dependências
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Sistema operacional
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Outras configurações opcionais
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

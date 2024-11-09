@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{611FC63B-14CF-44FC-B8ED-6B2A3A0A6B56}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroondasAPI", "MicroondasAPI", "{6D92037C-CE2F-477C-BA43-1AA5DDCE9320}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroondasAPI", "backend\MicroondasAPI\MicroondasAPI\MicroondasAPI.csproj", "{48BB76F3-3C46-4594-8476-0F15F92215B0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48BB76F3-3C46-4594-8476-0F15F92215B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48BB76F3-3C46-4594-8476-0F15F92215B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48BB76F3-3C46-4594-8476-0F15F92215B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48BB76F3-3C46-4594-8476-0F15F92215B0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6D92037C-CE2F-477C-BA43-1AA5DDCE9320} = {611FC63B-14CF-44FC-B8ED-6B2A3A0A6B56}
+		{48BB76F3-3C46-4594-8476-0F15F92215B0} = {6D92037C-CE2F-477C-BA43-1AA5DDCE9320}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {39B2673C-8E75-48C2-B59F-0DFAFAF32F33}
+	EndGlobalSection
+EndGlobal
