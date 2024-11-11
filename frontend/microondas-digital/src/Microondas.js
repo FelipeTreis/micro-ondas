@@ -10,14 +10,9 @@ function Microondas() {
   const [tempoRestante, setTempoRestante] = useState(0);
   const [isAquecendo, setIsAquecendo] = useState(false);
   const [intervaloAquecimento, setIntervaloAquecimento] = useState(null);
-  
+
   // Estado para armazenar os produtos da API
   const [produtos, setProdutos] = useState([]);
-  
-  // Programas pré-definidos (permanecem como estão)
-  const programasPreDefinidos = [
-    // ... seus programas existentes
-  ];
 
   // Função para obter os produtos da API
   useEffect(() => {
@@ -27,58 +22,84 @@ function Microondas() {
         setProdutos(data);
       })
       .catch(error => console.error("Erro ao carregar produtos:", error));
-  }, []); 
+  }, []);
+
+  // Função para salvar o produto na API
+  const salvarProduto = async () => {
+    const produto = {
+      nome: "Produto Exemplo", // Nome fixo, você pode modificar para permitir input do usuário
+      tempo: parseInt(tempo),
+      potencia: parseInt(potencia),
+      instrucoes: stringAquecimento || 'Instruções padrão'
+    };
+
+    try {
+      const response = await fetch('http://localhost:5186/api/alimento/salvar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(produto),
+      });
+
+      if (response.ok) {
+        setMensagem('Produto salvo com sucesso');
+      } else {
+        setMensagem('Erro ao salvar o produto');
+      }
+    } catch (error) {
+      setMensagem('Erro ao conectar com o servidor');
+      console.error(error);
+    }
+  };
+
+  // Função para selecionar um produto e iniciar o aquecimento
+  const selecionarProduto = (produto) => {
+    setTempo(produto.tempo);
+    setPotencia(produto.potencia);
+    setMensagem(`Produto selecionado: ${produto.nome}`);
+    setStringAquecimento(produto.instrucoes || 'Iniciando aquecimento...');
+    setStatusAquecimento('Aquecimento iniciado com produto');
+  };
 
   // Função para validar o aquecimento
   const validarAquecimento = async () => {
-      const data = {
-          tempo: parseInt(tempo),
-          potencia: parseInt(potencia),
-      };
+    const data = {
+      tempo: parseInt(tempo),
+      potencia: parseInt(potencia),
+    };
 
-      try {
-          const response = await fetch('http://localhost:5186/api/microondas/validar', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(data),
-          });
+    try {
+      const response = await fetch('http://localhost:5186/api/microondas/validar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
 
-          if (response.ok) {
-              const message = await response.json();
-              setMensagem(message.mensagem); // Agora estamos acessando a mensagem do JSON
-              return true;
-          } else {
-              const error = await response.json(); // Esperamos um JSON com a chave 'mensagem'
-              setMensagem(error.mensagem); // Exibe a mensagem de erro
-              return false;
-          }
-      } catch (error) {
-          setMensagem('Erro ao comunicar com o servidor.');
-          console.error(error);
-          return false;
+      if (response.ok) {
+        const message = await response.json();
+        setMensagem(message.mensagem);
+        return true;
+      } else {
+        const error = await response.json();
+        setMensagem(error.mensagem);
+        return false;
       }
+    } catch (error) {
+      setMensagem('Erro ao comunicar com o servidor.');
+      console.error(error);
+      return false;
+    }
   };
 
   // Função para iniciar o aquecimento
   const iniciarAquecimento = async () => {
-    const isValid = await validarAquecimento(); // Chama a função de validação
-
-    if (!isValid) {
-      return; // Interrompe o processo de aquecimento se a validação falhar
-    }
+    const isValid = await validarAquecimento();
+    if (!isValid) return;
 
     let tempoEmSegundos = parseInt(tempo);
-    
-    if (tempoEmSegundos > 60 && tempoEmSegundos < 100) {
-      const minutos = Math.floor(tempoEmSegundos / 60);
-      const segundos = tempoEmSegundos % 60;
-      setMensagem(`Aquecendo por: ${minutos}:${segundos < 10 ? '0' + segundos : segundos}`);
-    } else {
-      setMensagem(`Aquecendo por: ${tempoEmSegundos} segundos`);
-    }
-
     setStatusAquecimento('Aquecimento iniciado');
     setTempoRestante(tempoEmSegundos);
     setIsAquecendo(true);
@@ -97,70 +118,10 @@ function Microondas() {
     setIntervaloAquecimento(intervalo);
   };
 
-  // Função para iniciar o aquecimento rápido
-  const iniciarAquecimentoRapido = () => {
-    setTempo(30); // 30 segundos para aquecimento rápido
-    setPotencia(10); // Potência padrão de 10
-    setMensagem('Aquecendo por: 30 segundos');
-    setStatusAquecimento('Aquecimento rápido iniciado');
-    setTempoRestante(30);
-    setIsAquecendo(true);
-
-    const intervalo = setInterval(() => {
-      if (tempoRestante > 0) {
-        setStringAquecimento('.'.repeat(tempoRestante % 10));
-        setTempoRestante(tempoRestante - 1);
-      } else {
-        clearInterval(intervalo);
-        setStatusAquecimento('Aquecimento concluído');
-        setStringAquecimento('Aquecimento concluído');
-      }
-    }, 1000);
-
-    setIntervaloAquecimento(intervalo);
-  };
-
-  // Função para selecionar programa pré-definido
-  const selecionarPrograma = (programa) => {
-    setTempo(programa.tempo);
-    setPotencia(programa.potencia);
-    setMensagem(`Programa selecionado: ${programa.nome}`);
-    setStringAquecimento(programa.stringAquecimento);
-    setStatusAquecimento('Programa pré-definido iniciado');
-  };
-
-  // Função para selecionar um produto da API
-  const selecionarProduto = (produto) => {
-    setTempo(produto.tempo);
-    setPotencia(produto.potencia);
-    setMensagem(`Produto selecionado: ${produto.nome}`);
-    setStringAquecimento(produto.instrucoes);
-    setStatusAquecimento('Aquecimento iniciado com produto');
-  };
-
-  // Função para pausar/cancelar o aquecimento
-  const pausarOuCancelar = (acao) => {
-    if (acao === 'pausar' && isAquecendo) {
-      clearInterval(intervaloAquecimento);
-      setIsAquecendo(false);
-      setStatusAquecimento('Aquecimento pausado');
-    } else if (acao === 'cancelar') {
-      setTempo('');
-      setPotencia('');
-      setMensagem('');
-      setStatusAquecimento('Aquecimento não iniciado');
-      setStringAquecimento('');
-      setIsAquecendo(false);
-    }
-  };
-
-  const handleTempoChange = (e) => {
-    setTempo(e.target.value);
-  };
-
-  const handlePotenciaChange = (e) => {
-    setPotencia(e.target.value);
-  };
+  // Funções de controle de tempo e potência
+  const handleTempoChange = (e) => setTempo(e.target.value);
+  const handlePotenciaChange = (e) => setPotencia(e.target.value);
+  const handleInstrucoesChange = (e) => setStringAquecimento(e.target.value);
 
   return (
     <div className="microondas">
@@ -197,19 +158,18 @@ function Microondas() {
       </div>
 
       <div>
-        <button onClick={iniciarAquecimento}>Iniciar Aquecimento</button>
-        <button onClick={iniciarAquecimentoRapido}>Iniciar Aquecimento Rápido</button>
-        <button className="pausar-btn" onClick={() => pausarOuCancelar('pausar')}>Pausar</button>
-        <button className="cancelar-btn" onClick={() => pausarOuCancelar('cancelar')}>Cancelar</button>
+        <label>Instruções:</label>
+        <input
+          type="text"
+          value={stringAquecimento}
+          onChange={handleInstrucoesChange}
+          placeholder="Instruções do produto"
+        />
       </div>
 
       <div>
-        <h3>Programas Pré-Definidos</h3>
-        {programasPreDefinidos.map((programa, index) => (
-          <button key={index} onClick={() => selecionarPrograma(programa)}>
-            {programa.nome}
-          </button>
-        ))}
+        <button onClick={iniciarAquecimento}>Iniciar Aquecimento</button>
+        <button onClick={salvarProduto}>Cadastrar Produto</button>
       </div>
 
       <div>
